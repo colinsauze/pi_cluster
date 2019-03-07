@@ -4,7 +4,6 @@ from mpi4py import MPI
 import numpy as np
 import matplotlib
 matplotlib.use('Agg')
-
 import matplotlib.pyplot as plt
 import os
 
@@ -24,26 +23,26 @@ def inside_circle(total_count):
 
 
 
-    fig,ax = plt.subplots()
-    plt.scatter(x,y,s=1.0,c='b',marker='x')
 
-    circle = matplotlib.patches.Circle((0,0), radius=1, edgecolor='red',fill=False)
+    fig,ax = plt.subplots()
+    plt.scatter(x,y,s=0.25,c='blue')
+
+    circle = matplotlib.patches.Circle((0,0), radius=1, edgecolor='r',fill=False)
     ax.add_patch(circle)
 
     plt.xlim(0,1.01)
     plt.ylim(0,1.01)
 
+    #get the MPI rank and job ID to make the filename from
+    rank = str(MPI.COMM_WORLD.Get_rank())
+    jobid=str(os.environ.get('SLURM_JOBID'))
+
+    plt.title("MPI Rank:"+rank+" length="+str(total_count))
+    plt.savefig(jobid+"_"+rank+".png")
 
     radii = np.sqrt(x*x + y*y)
 
     count = len(radii[np.where(radii<=1.0)])
-
-
-    #get the MPI rank and job ID to make the filename from
-    rank = str(MPI.COMM_WORLD.Get_rank())
-    jobid=str(os.environ.get('SLURM_JOBID'))
-    plt.title(str(total_count)+" points total, "+str(count)+" points in the cirlce. Pi="+str(4.0 * count / total_count))
-    plt.savefig(jobid+"_"+rank+".png")
 
     return count
 
