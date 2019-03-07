@@ -1,0 +1,118 @@
+# Master Node Setup
+
+(OPT) Add empty ssh.txt file to boot partition before startup.
+Replace /etc/dchpcd.conf with modified v.
+Replace /etc/hosts with modified v. >> Add aberfwd04
+Replace /etc/network/interfaces with modified v.
+Manually configure aberfwd04 to connect to master pi (previous setup involved aberfwd receiving ipaddr from master pi) Run share_internet.sh >> pi now has internet connection
+rpi-update and apt update/upgrade
+Sudo apt-get install dnsmasq
+Replace /etc/dnsmasq.conf with modified v. >> Reboot
+DCHP not working - /etc/network/interfaces specifies static ip addresses
+DNS fails - can ping ipaddrs 8.8.8.8 but not domain names
+Edit /etc/dnsmasq.conf >> uncomment no-resolv >> specify nameservers manually
+Edit etc/modules to include ipv6
+sudo service rpcbind start and install nfs-kernel-server
+
+# Slave Node Setup 
+Slave1
+Add ssh.txt to boot d
+Update /etc/hosts with ipaddrs of other Pis
+rpi-update and apt update/upgrade
+(ONLY ONCE)
+transplant fs of slave1 to master1 via rsync (see slave1share) 
+(may have to 'PermitRootLogin yes' in /etc/ssh/sshd_config >>> service ssh reload)
+
+# Master1
+Edit /etc/exports to expose /nfs/slave1 to 10.0.0.0/24(rw,root_squash,nohide,insecure,no_subtree_check,async)
+Install mpich, zlib1g, zlib1g-dev and libxml2-dev
+
+# Slave1
+
+Fix errors resulting from network boot
+etc/systemd/journald.conf, system.conf /lib/systemd/system unmarked executable chmod og-w chmod a-x only on files
+Network Time Synchronisation failed? NTP server? Install NTP on slave
+Dependencies failed for /boot, Local Filesystems and check on dev/mmcblkp0 >> mispelled name
+Disabled bluetooth
+Add /home nfs export from master to slave
+Mount /tmp as /tmpfs on slave
+sudo mount / -o remount,rw
+Install mpich, zlib1g etc.
+
+# Master
+
+Install Slurm-Controller (slurm-wlm)
+Edit slurm.conf, or replace with alt. version >> move to shared storage
+Systemctl enable & start munge, slurmd, slurmctld
+
+# Slave
+
+Install slurmd slurm-client
+Munge.service start fails - cannot access logfile - permission denied - even as root when chmod 777?
+Munge is now controlled by systemd - /etc/default/munge & /etc/init.d/munge no longer used
+"* `systemctl edit --system --full munge`
+  This command will perform the following actions:
+  
+  1. Copy `munge.service` to `/etc/systemd/system/munge.service`
+  2. Invoke an editor on this new `munge.service` file
+  3. Reload the systemd configuration afterwards
+  
+  While in the editor, append either `--syslog` or `--force` to the `ExecStart` line:
+  ```
+  ExecStart=/usr/sbin/munged --syslog
+  ```
+  If `munge.service` is instead manually edited, a `systemctl daemon-reload` will be necessary to reload the systemd configuration afterwards.
+* `systemctl enable munge`
+  This command will enable the service at boot.
+* `systemctl start munge`"
+Fixed issue - new issue - PIDfile insecure - group writable permission set on root?
+
+Edit slurm.conf - point at /tmp/slurmd.log
+
+
+## Directories which need writing to
+
+/var/log
+/var/lib/slurm-llnl/slurmd
+/var/lib/slurm-llnl/checkpoint
+/var/lib/slurm-llnl/slurmctld
+
+
+## Sorting out permissions
+
+sudo chmod o-r /etc/ssh/ssh_host_ecdsa_key
+sudo chmod o-r /etc/ssh/ssh_host_ed25519_key
+sudo chmod a-x *
+sudo chmod o-r *_key
+
+cd /nfs/slave1/usr/lib/systemd/user/
+sudo chmod -x *.target
+sudo chmod -x *.service
+
+## Enabling a node after reboot
+
+sudo scontrol update NodeName=slave2 state=resume
+
+
+# Setting up user software
+
+## Setting up mpi4py
+
+sudo apt install python3-pip
+
+pip3 install --user mpi4py
+
+
+# NFS issues
+issues with home directory not mounting, changed fstab to:
+
+10.0.0.10:/home /home   nfs     relatime,vers=3,nolock,proto=udp,timeo=11,retrans=3     0       2
+
+
+
+# Networking issues
+
+There needs to be a correct and working NTP server on the network. If not nodes may have time sync issues which can break slurm and NFS.
+
+
+
