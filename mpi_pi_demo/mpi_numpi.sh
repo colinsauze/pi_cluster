@@ -6,4 +6,4 @@
 #SBATCH --error=err.%J
 #SBATCH --ntasks=10
 ###
-mpirun python3 mpi_numpi.py 10000000
+mpirun python3 mpi_numpi.py $1
