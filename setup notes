@@ -114,5 +114,23 @@ issues with home directory not mounting, changed fstab to:
 
 There needs to be a correct and working NTP server on the network. If not nodes may have time sync issues which can break slurm and NFS.
 
+DNSmasq configured to not give default route to non-raspberry pi machines that were often laptops connecting with their own wifi.
+
+#set default route
+dhcp-option=3
+dhcp-option=6
+dhcp-option=tag:client_is_a_pi,3,10.0.0.1
+dhcp-option=tag:client_is_a_pi,6,10.0.0.10
+#set NTP server
+dhcp-option=tag:client_is_a_pi,option:ntp-server,10.0.0.10
+
+
+
+# Linpak
+
+https://epcced.github.io/wee_archlet/#bench
+
+/usr/bin/ld: /usr/lib/arm-linux-gnueabihf/libmpich.a(lib_libmpich_la-mpiu_thread_posix.o): undefined reference to symbol 'pthread_create@@GLIBC_2.4'
+//lib/arm-linux-gnueabihf/libpthread.so.0: error adding symbols: DSO missing from command line
 
 
