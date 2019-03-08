@@ -25,7 +25,7 @@ def inside_circle(total_count):
 
 
     fig,ax = plt.subplots()
-    plt.scatter(x,y,s=0.25,c='blue')
+    plt.scatter(x,y,s=1.0,c='b',marker='x')
 
     circle = matplotlib.patches.Circle((0,0), radius=1, edgecolor='r',fill=False)
     ax.add_patch(circle)
@@ -37,12 +37,13 @@ def inside_circle(total_count):
     rank = str(MPI.COMM_WORLD.Get_rank())
     jobid=str(os.environ.get('SLURM_JOBID'))
 
-    plt.title("MPI Rank:"+rank+" length="+str(total_count))
-    plt.savefig(jobid+"_"+rank+".png")
-
     radii = np.sqrt(x*x + y*y)
 
     count = len(radii[np.where(radii<=1.0)])
+
+    plt.title(str(total_count)+" points total, "+str(count)+" points in circle, Pi="+str(4.0 * count / total_count))
+    plt.savefig(jobid+"_"+rank+".png")
+
 
     return count
 
