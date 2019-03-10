@@ -1,0 +1,56 @@
+#:kivy 1.2.0
+<GUIWidget>:   
+
+    Slider:
+        id: number_of_cores_slider
+        pos: 10,200
+        width: 300
+        orientation: 'horizontal'
+        range: (1,10)
+        value: 10
+
+    Label:
+        id: number_of_cores_slider_value_label
+        pos: 310,200
+        text: str(int(number_of_cores_slider.value))
+
+    Label: 
+        id: number_of_cores_slider_label
+        pos: 70,170
+        text: "Number of processors (cores)"
+
+
+    Slider:
+        id: number_of_points_slider
+        pos: 10,100
+        width: 500
+        step: 100
+        orientation: 'horizontal'
+        range: (0,2500000)
+        value: 1000
+
+    Label:
+        id: number_of_points_slider_value_label
+        pos: 510,100
+        text: str(int(number_of_points_slider.value))
+
+    Label: 
+        id: number_of_points_slider_label
+        pos: 70,70
+        text: "Number of points (total)"
+
+	Button:
+		text: "Start Job"
+		on_press: root.button_handler()
+
+
+    Label:
+        id: queue_label
+        pos: 0,350
+        text: "Job Queue:\n\nEmpty"
+       
+    Label:
+        id: message_label
+        pos: 150,500
+        text: "Messages:"
+
