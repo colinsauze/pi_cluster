@@ -1,0 +1,50 @@
+#Power on Procedure
+
+Turn on switch
+
+## Connect the EeePC as an internet gateway 
+
+Turn on EeePC, it acts as an internet gateway and NTP server. The Raspberry Pi's must have an accurate time source.
+Run the script share_internet.sh on the EeePC
+Open a web browser and visit a page, force it to reload by pressing Ctrl+F5 and go through the Guest Wifi's login process.
+
+## Turn on the master node
+
+Ensure the master node is connected to the switch. 
+Ensure the monitor, keyboard and mouse are connected and that the monitor has power.
+Plugin the master node and let it boot.
+Check it has the correct time and date.
+Check it can ping something on the internet
+(if possible) plug in a second laptop to the switch and get an IP via DHCP. This machine should NOT get a default route or DNS from the DHCP server. 
+
+## Turn on the worker nodes
+
+Do this one bank of 3/4 nodes at a time to reduce NFS server load. Each bank should be on its own power bar. 
+Plug in the first bank and allow it to boot, this will take a couple of minutes.
+SSH into each node in turn, check that /home is mounted correctly, if there is a password prompt this is a sign that its not.
+Check that the time and date are correct.
+The node should appear in sinfo on the master listed in state "down" and not "down*" (which means it is unreachable).
+Repeat for each bank of nodes
+Once all nodes are booted run the script cluster_up.sh on the master, this should change the sinfo state to "idle"
+
+## Running the Pi calculation Demo
+
+Open a terminal
+cd pi_cluster/mpi_pi_demo/gui
+python3 gui.py
+
+Open a file manager to the same directory to show output images
+
+
+## Shutting down
+
+(optional) drain the compute nodes with:
+sudo scontrol update NodeName=worker[00-09] state=drain reason=Shutdown 
+
+Run shutdown_cluster.sh to shutdown the compute nodes
+
+
+
+power off each bank in turn
+shutdown master
+unplug it
