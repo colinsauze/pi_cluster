@@ -11,7 +11,7 @@ class GUIWidget(Widget):
         output = subprocess.check_output(["sbatch", "../mpi_numpi.sh",(str(int(num_points)))])
         print(output)
         #should say "Submitted batch job <jobid>"
-        jobid=int(output.split(" ")[3])
+        jobid=int(output.decode('UTF-8').split(" ")[3].strip())
         self.ids["message_label"].text = "Submitted job "+str(jobid)
 
         #grab the job number, add to a list of queued/running jobs
