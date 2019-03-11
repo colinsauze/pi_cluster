@@ -1,31 +1,51 @@
 import subprocess
+import os
+import glob
 from kivy.app import App
 from kivy.uix.widget import Widget
+from kivy.clock import Clock
+from kivy.core.window import Window
 
 class GUIWidget(Widget):
     def button_handler(self):
-        print("button pressed")
         num_points = self.ids["number_of_points_slider"].value
         print("number of points",str(int(num_points)))
         #launch a batch job
         output = subprocess.check_output(["sbatch", "../mpi_numpi.sh",(str(int(num_points)))])
         print(output)
         #should say "Submitted batch job <jobid>"
-        jobid=int(output.split(" ")[3])
-        self.ids["message_label"].text = "Submitted job "+str(jobid)
+        jobid=int(output.decode('UTF-8').split(" ")[3].strip())
+        self.ids["message_label"].text = "Messages:\n\nSubmitted job "+str(jobid)
 
-        #grab the job number, add to a list of queued/running jobs
-        #spawn a seperate thread to monitor the queue
-        #display output of last few completed jobs
+    def update_queue(self, interval):
+        #get/display the job queue
+        output = subprocess.check_output(["squeue","--format=\"%5i %20j %3t %5M %25N\""])
+        self.ids["queue_label"].text = "Job Queue:\n\n" + output.decode('UTF-8').replace('"','')
 
-    def update_queue(self):
-        output = subprocess.check_output(["squeue","--format=\"%i %j %t %M %N %i\""])
-        self.ids["queue_label"].text = output
+        #get/display the output from the last command
+        files = glob.glob("Job *")   
+        files.sort(key=os.path.getmtime, reverse=True)
 
+        file_count = len(files)
+
+        if file_count >3:
+            file_count = 3
+
+        output = "Program Output:\n\n"
+        for i in range(file_count-1,-1,-1):
+            output = output + files[i] + "\n"
+            f = open(files[i], 'r')
+            output = output + f.read()
+            f.close()
+
+        self.ids["output_label"].text = output
 
 class GUIApp(App):
     def build(self):
-        return GUIWidget()
+        Window.size = ( 1024, 768)
+        widget = GUIWidget()
+        Clock.schedule_interval(widget.update_queue, 1)
+        return widget
 
 if __name__ == '__main__':
     GUIApp().run()
