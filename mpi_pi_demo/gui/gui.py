@@ -8,13 +8,20 @@ class GUIWidget(Widget):
         num_points = self.ids["number_of_points_slider"].value
         print("number of points",str(int(num_points)))
         #launch a batch job
-        output = subprocess.check_output(["python3", "../mpi_numpi.py",(str(int(num_points)))])
+        output = subprocess.check_output(["sbatch", "../mpi_numpi.sh",(str(int(num_points)))])
         print(output)
-        self.ids["message_label"].text = str(output.decode('UTF-8'))
+        #should say "Submitted batch job <jobid>"
+        jobid=int(output.split(" ")[3])
+        self.ids["message_label"].text = "Submitted job "+str(jobid)
 
         #grab the job number, add to a list of queued/running jobs
         #spawn a seperate thread to monitor the queue
         #display output of last few completed jobs
+
+    def update_queue(self):
+        output = subprocess.check_output(["squeue","--format=\"%i %j %t %M %N %i\""])
+        self.ids["queue_label"].text = output
+
 
 class GUIApp(App):
     def build(self):
