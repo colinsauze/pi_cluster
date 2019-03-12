@@ -6,6 +6,7 @@ import matplotlib
 matplotlib.use('Agg')
 import matplotlib.pyplot as plt
 import os
+import time
 
 #np.random.seed(2017)
 
@@ -54,6 +55,8 @@ def estimate_pi(n_samples):
 
 if __name__=='__main__':
 
+    start_time = time.time()
+
     n_samples = 10000
     if len(sys.argv) > 1:
         n_samples = int(sys.argv[1])
@@ -74,5 +77,7 @@ if __name__=='__main__':
     if rank == 0:
         my_pi = 4.0 * sum(counts) / n_samples
         sizeof = np.dtype(np.float32).itemsize
+        end_time = time.time()
+        elapsed_time = end_time - start_time
         #print("[     mpi version] required memory %.3f MB" % (n_samples*sizeof*3/(1024*1024)))
-        print("Used %i processors, %i points. Pi calculated as %f" % (size,n_samples,my_pi))
+        print("Used %i processors, %i points. Pi calculated as %f. Total Time %d seconds" % (size,n_samples,my_pi,elapsed_time))
