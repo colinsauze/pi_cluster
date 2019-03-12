@@ -10,8 +10,11 @@ class GUIWidget(Widget):
     def button_handler(self):
         num_points = self.ids["number_of_points_slider"].value
         print("number of points",str(int(num_points)))
+
+        num_tasks = self.ids["number_of_cores_slider"].value
+        print("number of jobs",str(int(num_tasks)))
         #launch a batch job
-        output = subprocess.check_output(["sbatch", "../mpi_numpi.sh",(str(int(num_points)))])
+        output = subprocess.check_output(["sbatch", "-n",str(int(num_tasks)),"../mpi_numpi.sh",(str(int(num_points)))])
         print(output)
         #should say "Submitted batch job <jobid>"
         jobid=int(output.decode('UTF-8').split(" ")[3].strip())
