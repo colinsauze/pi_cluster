@@ -45,8 +45,8 @@ class GUIWidget(Widget):
 
 class GUIApp(App):
     def build(self):
-        Window.size = ( 1024, 768)
         self.title = "Super Computer Job Control"
+        Window.size = ( 1024, 768)
         widget = GUIWidget()
         Clock.schedule_interval(widget.update_queue, 1)
         return widget
