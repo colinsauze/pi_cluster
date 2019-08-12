@@ -6,6 +6,7 @@ import matplotlib
 matplotlib.use('Agg')
 import matplotlib.pyplot as plt
 import os
+import time
 
 #np.random.seed(2017)
 
@@ -20,9 +21,6 @@ def inside_circle(total_count):
 
     x = np.float32(np.random.uniform(size=total_count))
     y = np.float32(np.random.uniform(size=total_count))
-
-
-
 
     fig,ax = plt.subplots()
     plt.scatter(x,y,s=1.0,c='b',marker='x')
@@ -74,5 +72,6 @@ if __name__=='__main__':
     if rank == 0:
         my_pi = 4.0 * sum(counts) / n_samples
         sizeof = np.dtype(np.float32).itemsize
+
         #print("[     mpi version] required memory %.3f MB" % (n_samples*sizeof*3/(1024*1024)))
-        print("Used %i processors, %i points. Pi calculated as %f" % (size,n_samples,my_pi))
+        print("Used %i processors, %i points. Pi calculated as %f." % (size,n_samples,my_pi),end='')
