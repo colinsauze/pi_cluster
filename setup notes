@@ -124,6 +124,82 @@ dhcp-option=tag:client_is_a_pi,6,10.0.0.10
 #set NTP server
 dhcp-option=tag:client_is_a_pi,option:ntp-server,10.0.0.10
 
+If anything is present in /etc/network/interfaces the network GUI stops working. Static IPs can be specified in /etc/dhcpcd.conf instead of /etc/network/interfaces if you want to keep the GUI applet working.
+
+
+## Wifi access point
+
+If the master is a Pi3 or better (or has a USB wifi dongle) it can act as a wifi access point. This is a useful way for people to login.
+
+sudo apt install hostapd bridge-utils
+
+in /etc/default/hostapd set the path to the config:
+
+	DAEMON_CONF="/etc/hostapd/hostapd.conf"
+
+create a hostapd config
+
+#/etc/hostapd/hostapd.conf
+	country_code=GB
+	interface=wlan0
+	driver=nl80211
+	bridge=br0
+	ssid=MySSID
+	hw_mode=g
+	channel=2
+	ieee80211n=1
+	wmm_enabled=0
+
+	ht_capab=[HT40][SHORT-GI-20][DSSS_CK-40]
+	macaddr_acl=0
+
+	auth_algs=1
+
+	ignore_broadcast_ssid=0
+
+	wpa=2
+	wpa_key_mgmt=WPA-PSK
+
+	wpa_passphrase=password
+	rsn_pairwise=CCMP
+	ctrl_interface=/var/run/hostapd
+
+
+The hostapd service is masked by default, unmask it with:
+
+	sudo systemctl unmask hostapd
+
+Enable it to run after reboot
+
+	sudo systemctl enable hostapd
+
+Start it
+
+	sudo systemctl start hostapd
+
+
+
+Now we need to bring up the bridge interface and assign an IP address to it. This should be the same IP we were giving to the ethernet interface. The ethernet interface doesn't need to have an IP directly 
+assigned now. 
+
+#/etc/network/interfaces
+	auto br0
+	iface br0 inet static
+		address 10.0.0.10
+		netmask 255.255.255.0
+		gateway 10.0.0.1
+	    bridge_ports eth0 wlan0
+	    bridge_fd 0
+	    pre-up service hostapd start
+
+
+Bring up the new network config
+
+sudo service networking restart
+
+Using this will break the lxde network management applet as dhcpcd won't start and the GUI talks to dhcpcd. 
+
+
 
 
 # Linpak
@@ -132,5 +208,8 @@ https://epcced.github.io/wee_archlet/#bench
 
 /usr/bin/ld: /usr/lib/arm-linux-gnueabihf/libmpich.a(lib_libmpich_la-mpiu_thread_posix.o): undefined reference to symbol 'pthread_create@@GLIBC_2.4'
 //lib/arm-linux-gnueabihf/libpthread.so.0: error adding symbols: DSO missing from command line
+
+
+
 
 
