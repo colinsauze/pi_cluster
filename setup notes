@@ -210,6 +210,50 @@ https://epcced.github.io/wee_archlet/#bench
 //lib/arm-linux-gnueabihf/libpthread.so.0: error adding symbols: DSO missing from command line
 
 
+# Adding users
+
+You'll have to create a accounts for users on both the master and (one of) the workers. 
+
+Don't manually copy /etc/passwd from the master to the workers. Their files are NOT identical. You will have to create the accounts twice or copy the relevant part of /etc/passwd. 
+Password based SSH logins to nodes can be prevented by not copying the shadow entires of new users. 
+
+# Quotas
+
+##setting up
+
+sudo apt install quota
+sudo service quota start
+
+
+(using an external USB hard disk on /dev/sda1)
+ sudo mount /dev/sda1 /home -o usrquota,grpquota
+ 
+ sudo quotacheck -ugm /home
+
+ 
+ sudo quotaon /home
+
+### check quota
+ quota -vs
+
+ ##manually mounting
+ 
+  sudo mount /dev/sda /home -o usrquota,grpquota
+  sudo quotaon /home
+
+
+# Providing external access through an SSH tunnel
+
+Use this if you want people to be able to SSH into the pi cluster when its behind a NAT router etc.
+
+On the pi cluster:
+
+ssh <user>@<hostname> -R 0.0.0.0:2000:localhost:22
+
+
+This will bind port 2000 on <hostname> to port 22 on the cluster. You might need to add GatewayPorts = yes to your SSHD config in /etc/ssh/sshd_config on the external host.
+
+
 
 
 
