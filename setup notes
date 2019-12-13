@@ -240,6 +240,8 @@ sudo service quota start
  
   sudo mount /dev/sda /home -o usrquota,grpquota
   sudo quotaon /home
+  
+  home filesystem UUID bb6deaa6-d9ea-4472-bbd7-88b055db9a47
 
 
 # Providing external access through an SSH tunnel
@@ -254,6 +256,73 @@ ssh <user>@<hostname> -R 0.0.0.0:2000:localhost:22
 This will bind port 2000 on <hostname> to port 22 on the cluster. You might need to add GatewayPorts = yes to your SSHD config in /etc/ssh/sshd_config on the external host.
 
 
+# Loadable modules
 
 
+Install modules:
+
+    sudo apt install environment-modules
+
+Install Python as a module, libffi-dev is needed to build it:
+
+    sudo apt install libffi-dev libssl-dev build-essential
+    wget https://www.python.org/ftp/python/3.7.0/Python-3.7.0.tgz
+    tar xvfz Python-3.7.0.tgz 
+    cd Python-3.7.0/
+    sudo ./configure --prefix=/usr/share/modules/Modules/python/3.7.0 --with-ssl
+    make -j4
+    sudo make install
+
+## Installing pip packages systemwide
+
+    sudo -s
+    . /etc/profile.d/modules.sh 
+    module load python
+    pip3 install cython
+
+The version of numpy from pypi is precompiled with a version of Glibc that was incompatible with my install. Build it from source instead, cython is needed first (see above).
+
+Numpy also prefers to have a linear algebra library installed such as lapack.
+
+
+    apt-install liblapack3 libatlas-base-dev
+
+Get numpy source code and build:
+ 
+    wget https://github.com/numpy/numpy/releases/download/v1.17.4/numpy-1.17.4.tar.gz
+    tar xvfz numpy-1.17.4.tar.gz
+    python setup.py build -j 4 install --prefix /usr/share/modules/Modules/python/3.7.0/
+    
+    
+Install other useful pip packages:
+
+   pip3 install matplotlib
+   
+
+Setup worker nodes:
+
+    ssh worker00
+    sudo mount / -o remount,rw
+    sudo apt install environment-modules
+    exit
+    
+    sudo mkdir -p /nfs/slave1/usr/share/modules/Modules/python/
+    sudo cp -r /usr/share/modules/Modules/python/3.7.0 /nfs/slave1/usr/share/modules/Modules/python/
+
+
+# Things to do on boot
+
+Enable quotas
+
+   sudo quotaon /home
+
+If there’s an error about not finding /dev/root
+
+   sudo ln -s /dev/mmcblk0p2 /dev/root
+
+
+* Check internet access, check time is correct for NTP
+* boot nodes
+* Enable nodes:
+    sudo scontrol update NodeName=worker[00-09] state=resume
 
