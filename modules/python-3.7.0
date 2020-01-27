@@ -1,0 +1,31 @@
+#%Module1.0###########################################################
+#
+# Python 3.7.0 application modulefile
+#
+proc ModulesHelp { } {
+
+  puts stderr "\tAdds the Python 3.7.0,"
+}
+
+
+module-whatis "adds Python 3.7.0"
+
+set app              "python"
+set version          "3.7.0"
+set help_text        "\tThis module will make the Python language version 3.7.0 available."
+
+##################################################################
+# Application specific settings
+##################################################################
+
+
+set     base    /usr/share/modules/Modules/python/3.7.0
+prepend-path      PATH              ${base}/bin
+prepend-path      LD_LIBRARY_PATH   ${base}/lib
+prepend-path      LIBRARY_PATH      ${base}/lib
+prepend-path      PYTHONPATH        ${base}/lib/python3.7/site-packages
+prepend-path      PKG_CONFIG_PATH   ${base}/lib/pkgconfig
+prepend-path      MANPATH           ${base}/share/man
+
+setenv PYTHON_HOME $base
+setenv PYTHON_INCLUDE_OPTS "-I${base}/include"
