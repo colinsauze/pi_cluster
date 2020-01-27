@@ -19,6 +19,12 @@ cd /home/pi/pi_cluster/config
 cp -r master/etc/* /etc
 cp master/config.txt /boot
 
+#slurm configuration
+mkdir /var/run/slurm-llnl
+mkdir /var/lib/slurm-llnl
+chmod slurm:slurm /var/run/slurm-llnl
+chmod slurm:slurm /var/lib/slurm-llnl
+
 #tmux wants the US locale??? Seems to work without it, commenting out for now
 #echo "enable en_US UTF8 locale"
 #dpkg-reconfigure locales
@@ -58,7 +64,7 @@ make install
 #remove default system modules
 mv /usr/share/modules/modulefiles /usr/share/modules/modulefiles.unwanted
 mkdir -p /usr/share/modules/modulefiles
-cp ~/pi_cluster/modules/python-3.7.0 /usr/share/modules/modulefiles/python/3.7.0 
+cp /home/pi/pi_cluster/modules/python-3.7.0 /usr/share/modules/modulefiles/python/3.7.0 
 
 ## Installing pip packages systemwide
 . /etc/profile.d/modules.sh 
