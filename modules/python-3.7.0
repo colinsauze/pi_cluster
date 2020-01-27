@@ -23,7 +23,8 @@ set     base    /usr/share/modules/Modules/python/3.7.0
 prepend-path      PATH              ${base}/bin
 prepend-path      LD_LIBRARY_PATH   ${base}/lib
 prepend-path      LIBRARY_PATH      ${base}/lib
-prepend-path      PYTHONPATH        ${base}/lib/python3.7/site-packages
+#prepend-path      PYTHONPATH        ${base}/lib/python3.7/site-packages
+prepend-path      PYTHONPATH        ${base}
 prepend-path      PKG_CONFIG_PATH   ${base}/lib/pkgconfig
 prepend-path      MANPATH           ${base}/share/man
 
