@@ -14,9 +14,8 @@
 
 * Run the deployment script on the Pi:
 
-    curl 
-    
-## Modules
+    wget https://raw.githubusercontent.com/colinsauze/pi_cluster/master/deployment/deploy-master.sh
+    sudo bash ./deploy-master.sh 
     
     
 # Slave Node
@@ -27,7 +26,8 @@
 
 * Run the slave deployment script:
 
-    curl 
+    wget https://raw.githubusercontent.com/colinsauze/pi_cluster/master/deployment/deploy-slave.sh
+    sudo bash ./deploy-slave.sh 
     
 * You now have the entire slave image on an SD card.
 
