@@ -30,8 +30,8 @@ systemctl enable ssh
 systemctl unmask hostapd
 systemctl enable hostapd
 
-#set the password to something more secure
-#usermod -p '$6$put_your_password_hash_here' pi
+#set the password to "Raspberries"
+usermod -p '6$YRfpaLjt1qWOJAPd$dpGwjm0AxrRmDmKhfpjPWnk441gpO5ESUCj5LmEkAxon.VRbhldH7JQGj9uO0nvLnBechI9HK.FtZosuB6upR0' pi
 
 #install SSH keys
 mkdir /home/pi/.ssh
