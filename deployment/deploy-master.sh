@@ -14,7 +14,7 @@ apt -y upgrade
 
 git clone --recursive https://github.com/colinsauze/pi_cluster
 chown -R pi:pi /home/pi/pi_cluster
-cd /home/pi/pi_cluster/deployment
+cd /home/pi/pi_cluster/config
 
 cp -r master/etc/* /etc
 cp master/config.txt /boot
@@ -47,7 +47,7 @@ ln -s /usr/share/zoneinfo/Etc/UTC /etc/localtime
 
 #setup python3 module
 
-cd 
+cd /home/pi
 wget https://www.python.org/ftp/python/3.7.0/Python-3.7.0.tgz
 tar xvfz Python-3.7.0.tgz 
 cd Python-3.7.0/
@@ -62,12 +62,13 @@ cp ~/pi_cluster/modules/python-3.7.0 /usr/share/modules/modulefiles/python/3.7.0
 
 ## Installing pip packages systemwide
 . /etc/profile.d/modules.sh 
-module load python
+module load python/3.7.0
 pip3 install cython
 
-cd 
+cd /home/pi
 wget https://github.com/numpy/numpy/releases/download/v1.17.4/numpy-1.17.4.tar.gz
 tar xvfz numpy-1.17.4.tar.gz
-python setup.py build -j 4 install --prefix /usr/share/modules/Modules/python/3.7.0/
+cd numpy-1.17.4
+python3.7 setup.py build -j 4 install --prefix /usr/share/modules/Modules/python/3.7.0/
        
 pip3 install matplotlib
