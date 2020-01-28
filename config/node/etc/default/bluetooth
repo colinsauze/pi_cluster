@@ -2,7 +2,7 @@
 
 # start bluetooth on boot?
 # compatibility note: if this variable is _not_ found bluetooth will start
-BLUETOOTH_ENABLED=1
+BLUETOOTH_ENABLED=0
 
 # This setting used to switch HID devices (e.g mouse/keyboad) to HCI mode, that
 # is you will have bluetooth functionality from your dongle instead of only
