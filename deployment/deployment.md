@@ -17,7 +17,11 @@
     wget https://raw.githubusercontent.com/colinsauze/pi_cluster/master/deployment/deploy-master.sh
     sudo bash ./deploy-master.sh 
     
-    
+## Potential Problems
+
+* If you get an SSL certificate warning check the time and date are correct. The Raspberry Pi has no clock module and the Raspbian image defaults to it being 2016 when it boots up the first time. It should get the time from the internet via NTP, but if you have any internet problems it can fail to get the correct time.
+
+
 # Slave Node
 
 * Prepare another SD card with Raspbian Lite Buster
