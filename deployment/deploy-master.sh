@@ -9,8 +9,8 @@ if [ `whoami` != "root" ] ; then
 fi
 
 apt -y update
-apt -y install hostapd mc git ntp screen tmux vim-nox lsof tcpdump python3-pip dnsmasq nfs-kernel-server bridge-utils quota slurmd slurm-client slurm-wlm slurm-wlm-basic-plugins slurmctld munge mpich libmpich-dev environment-modules zlib1g zlib1g-dev libxml2-dev quota libffi-dev libssl-dev build-essential liblapack3 libatlas-base-dev
 apt -y upgrade
+apt -y install hostapd mc git ntp screen tmux vim-nox lsof tcpdump python3-pip dnsmasq nfs-kernel-server bridge-utils quota slurmd slurm-client slurm-wlm slurm-wlm-basic-plugins slurmctld munge mpich libmpich-dev environment-modules zlib1g zlib1g-dev libxml2-dev quota libffi-dev libssl-dev build-essential liblapack3 libatlas-base-dev
 
 git clone --recursive https://github.com/colinsauze/pi_cluster
 chown -R pi:pi /home/pi/pi_cluster
@@ -83,7 +83,9 @@ mkdir -p /usr/share/modules/modulefiles/python/3.7.0
 cp /home/pi/pi_cluster/modules/python-3.7.0 /usr/share/modules/modulefiles/python/3.7.0 
 
 
-# Using pip in the module is broken because of SSL, using the system pip seems to still install things in places the module can find
+# /usr/bin/tclsh doesn't exist but /usr/bin/tclsh8.6 does, cython wants /usr/bin/tclsh
+ln -s /usr/bin/tclsh8.6 /usr/bin/tclsh
+
 pip3 install cython
 
 #load the module to build numpy
