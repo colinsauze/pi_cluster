@@ -9,36 +9,22 @@ if [ `whoami` != "root" ] ; then
 fi
 
 apt -y update
+apt -y install mc git ntp screen tmux vim-nox lsof tcpdump python3-pip dnsmasq bridge-utils quota slurmd slurm-client slurm-wlm slurm-wlm-basic-plugins munge mpich libmpich-dev environment-modules zlib1g zlib1g-dev libxml2-dev quota libffi-dev libssl-dev build-essential liblapack3 libatlas-base-dev
 apt -y upgrade
-apt -y install hostapd mc git ntp screen tmux vim-nox lsof tcpdump python3-pip dnsmasq nfs-kernel-server bridge-utils quota slurmd slurm-client slurm-wlm slurm-wlm-basic-plugins slurmctld munge mpich libmpich-dev environment-modules zlib1g zlib1g-dev libxml2-dev quota libffi-dev libssl-dev build-essential liblapack3 libatlas-base-dev
 
 git clone --recursive https://github.com/colinsauze/pi_cluster
 chown -R pi:pi /home/pi/pi_cluster
 cd /home/pi/pi_cluster/config
 
-cp -r master/etc/* /etc
-cp master/config.txt /boot
-echo "master" > /etc/hostname
-
+cp -r slave/etc/* /etc
+cp slave/config.txt /boot
 
 #tmux wants the US locale??? Seems to work without it, commenting out for now
 #echo "enable en_US UTF8 locale"
 #dpkg-reconfigure locales
 
-#disable trying to get DHCP leases
-systemctl disable dhcpcd
-
 #enable SSHD
 systemctl enable ssh
-
-#enable hostapd
-systemctl unmask hostapd
-systemctl enable hostapd
-
-#enable slurm
-systemctl enable munge
-systemctl enable slurmctld
-
 
 #set the password to "Raspberries"
 usermod -p '$6$YRfpaLjt1qWOJAPd$dpGwjm0AxrRmDmKhfpjPWnk441gpO5ESUCj5LmEkAxon.VRbhldH7JQGj9uO0nvLnBechI9HK.FtZosuB6upR0' pi
@@ -57,10 +43,21 @@ ln -s /usr/share/zoneinfo/Etc/UTC /etc/localtime
 
 #setup python3 module
 
+#python needs ssl for pip and the system version of openssl seems to incompatible
+#i'm still struggling to find a version which actually works
+#cd /home/pi
+#wget https://www.openssl.org/source/old/1.0.2/openssl-1.0.2u.tar.gz
+#tar xvfz openssl-1.0.2u.tar.gz
+#cd  openssl-1.0.2u
+#./config --prefix=/usr/share/modules/Modules/python/3.7.0
+#make -j 4
+#make install
+
+
 wget https://www.python.org/ftp/python/3.7.0/Python-3.7.0.tgz
 tar xvfz Python-3.7.0.tgz 
 cd Python-3.7.0/
-./configure --prefix=/usr/share/modules/Modules/python/3.7.0 --with-ssl
+./configure --prefix=/usr/share/modules/Modules/python/3.7.0
 make -j4
 make install
 
@@ -70,10 +67,7 @@ mkdir -p /usr/share/modules/modulefiles/python/3.7.0
 cp /home/pi/pi_cluster/modules/python-3.7.0 /usr/share/modules/modulefiles/python/3.7.0 
 
 
-# /usr/bin/tclsh doesn't exist but /usr/bin/tclsh8.6 does, cython wants /usr/bin/tclsh
-ln -s /usr/bin/tclsh8.6 /usr/bin/tclsh
-
-#load the module to build numpy and install cython/matplotlib
+#load the module to build numpy
 . /etc/profile.d/modules.sh 
 module load python/3.7.0
 
@@ -89,5 +83,4 @@ pip3 install matplotlib
 
 #unload the module to install matplotlib using the system pip 
 module purge
-
 
