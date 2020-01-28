@@ -16,8 +16,8 @@ git clone --recursive https://github.com/colinsauze/pi_cluster
 chown -R pi:pi /home/pi/pi_cluster
 cd /home/pi/pi_cluster/config
 
-cp -r slave/etc/* /etc
-cp slave/config.txt /boot
+cp -r node/etc/* /etc
+cp node/config.txt /boot
 
 #tmux wants the US locale??? Seems to work without it, commenting out for now
 #echo "enable en_US UTF8 locale"
