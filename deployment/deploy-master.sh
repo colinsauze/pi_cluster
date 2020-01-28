@@ -19,12 +19,6 @@ cd /home/pi/pi_cluster/config
 cp -r master/etc/* /etc
 cp master/config.txt /boot
 
-#slurm configuration
-mkdir /var/run/slurm-llnl
-mkdir /var/lib/slurm-llnl
-chmod slurm:slurm /var/run/slurm-llnl
-chmod slurm:slurm /var/lib/slurm-llnl
-
 #tmux wants the US locale??? Seems to work without it, commenting out for now
 #echo "enable en_US UTF8 locale"
 #dpkg-reconfigure locales
