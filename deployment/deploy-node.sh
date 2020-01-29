@@ -58,7 +58,7 @@ wget https://www.python.org/ftp/python/3.7.0/Python-3.7.0.tgz
 tar xvfz Python-3.7.0.tgz 
 cd Python-3.7.0/
 ./configure --prefix=/usr/share/modules/Modules/python/3.7.0
-make -j4
+make 
 make install
 
 #remove default system modules
@@ -77,7 +77,7 @@ cd /home/pi
 wget https://github.com/numpy/numpy/releases/download/v1.17.4/numpy-1.17.4.tar.gz
 tar xvfz numpy-1.17.4.tar.gz
 cd numpy-1.17.4
-python3.7 setup.py build -j 4 install --prefix /usr/share/modules/Modules/python/3.7.0/
+python3.7 setup.py build install --prefix /usr/share/modules/Modules/python/3.7.0/
 
 pip3 install matplotlib
 
