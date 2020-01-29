@@ -4,13 +4,13 @@ ff02::1		ip6-allnodes
 ff02::2		ip6-allrouters
 
 10.0.0.10	master1
-10.0.0.100      worker00
-10.0.0.101      worker01
-10.0.0.102      worker02
-10.0.0.103      worker03
-10.0.0.104      worker04
-10.0.0.105      worker05
-10.0.0.106      worker06
-10.0.0.107      worker07
-10.0.0.108      worker08
-10.0.0.109      worker09
+10.0.0.100      node00
+10.0.0.101      node01
+10.0.0.102      node02
+10.0.0.103      node03
+10.0.0.104      node04
+10.0.0.105      node05
+10.0.0.106      node06
+10.0.0.107      node07
+10.0.0.108      node08
+10.0.0.109      node09
