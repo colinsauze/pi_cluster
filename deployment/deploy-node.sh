@@ -67,6 +67,9 @@ mkdir -p /usr/share/modules/modulefiles/python/3.7.0
 cp /home/pi/pi_cluster/modules/python-3.7.0 /usr/share/modules/modulefiles/python/3.7.0 
 
 
+# /usr/bin/tclsh doesn't exist but /usr/bin/tclsh8.6 does, cython wants /usr/bin/tclsh
+ln -s /usr/bin/tclsh8.6 /usr/bin/tclsh
+
 #load the module to build numpy
 . /etc/profile.d/modules.sh 
 module load python/3.7.0
