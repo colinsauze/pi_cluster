@@ -1,0 +1,15 @@
+[Unit]
+Description=Creates the hostname file
+DefaultDependencies=no
+Before=network.target
+Conflicts=shutdown.target
+Requires=tmp.mount
+After=tmp.mount
+
+[Service]
+ExecStart=/usr/bin/touch /tmp/hostname
+Type=oneshot
+RemainAfterExit=yes
+
+[Install]
+WantedBy=default.target

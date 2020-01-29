@@ -9,7 +9,7 @@ if [ `whoami` != "root" ] ; then
 fi
 
 apt -y update
-apt -y install mc git ntp screen tmux vim-nox lsof tcpdump python3-pip dnsmasq bridge-utils quota slurmd slurm-client slurm-wlm slurm-wlm-basic-plugins munge mpich libmpich-dev environment-modules zlib1g zlib1g-dev libxml2-dev quota libffi-dev libssl-dev build-essential liblapack3 libatlas-base-dev
+apt -y install mc git ntp screen tmux vim-nox lsof tcpdump python3-pip quota slurmd slurm-client slurm-wlm slurm-wlm-basic-plugins munge mpich libmpich-dev environment-modules zlib1g zlib1g-dev libxml2-dev quota libffi-dev libssl-dev build-essential liblapack3 libatlas-base-dev
 apt -y upgrade
 
 git clone --recursive https://github.com/colinsauze/pi_cluster
@@ -87,3 +87,10 @@ pip3 install matplotlib
 #unload the module to install matplotlib using the system pip 
 module purge
 
+
+#setup hostnames correctly
+rm /etc/hostname
+ln -s /tmp/hostname /etc/hostname
+cp  /home/pi/pi_cluster/config/node/services/hostname-file.service /lib/systemd/system/
+systemctl daemon-reload
+systemctl enable hostname-file.service
