@@ -63,7 +63,7 @@ make install
 
 #remove default system modules
 mv /usr/share/modules/modulefiles /usr/share/modules/modulefiles.unwanted
-mkdir -p /usr/share/modules/modulefiles/python/3.7.0 
+mkdir -p /usr/share/modules/modulefiles/python/
 cp /home/pi/pi_cluster/modules/python-3.7.0 /usr/share/modules/modulefiles/python/3.7.0 
 
 
