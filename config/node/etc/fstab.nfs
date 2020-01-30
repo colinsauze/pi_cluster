@@ -1,9 +1,10 @@
 proc            /proc           proc    defaults          0       0
 /dev/mmcblk0p1  /boot           vfat    defaults          0       2
+#/dev/mmcblk0p2  /               ext4    defaults,noatime  0       1
+
+none	/var/tmp	tmpfs	defaults	0	0
 none	/tmp	tmpfs	defaults	0	0
 none	/var/log	tmpfs	defaults	0	0
-none	/var/lib/slurm-llnl/slurmd	tmpfs	defaults	0	0
-none	/var/lib/slurm-llnl/slurmctld	tmpfs	defaults	0	0
-none	/var/lib/slurm-llnl/checkpoint	tmpfs	defaults	0	0
+none	/var/lib/slurm-llnl/	tmpfs	defaults	0	0
 
 10.0.0.10:/home	/home	nfs	relatime,vers=3,nolock,proto=udp,timeo=11,retrans=3	0	2	

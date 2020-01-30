@@ -9,7 +9,7 @@ if [ `whoami` != "root" ] ; then
 fi
 
 apt -y update
-apt -y install mc git ntp screen tmux vim-nox lsof tcpdump python3-pip quota slurmd slurm-client slurm-wlm slurm-wlm-basic-plugins munge mpich libmpich-dev environment-modules zlib1g zlib1g-dev libxml2-dev quota libffi-dev libssl-dev build-essential liblapack3 libatlas-base-dev
+apt -y install mc git ntp screen tmux vim-nox lsof tcpdump python3-pip quota slurmd munge mpich libmpich-dev environment-modules zlib1g zlib1g-dev libxml2-dev quota libffi-dev libssl-dev build-essential liblapack3 libatlas-base-dev
 apt -y upgrade
 
 git clone --recursive https://github.com/colinsauze/pi_cluster
@@ -22,6 +22,14 @@ cp node/config.txt /boot
 #tmux wants the US locale??? Seems to work without it, commenting out for now
 #echo "enable en_US UTF8 locale"
 #dpkg-reconfigure locales
+
+#disable swapfile
+dphys-swapfile swapoff
+dphys-swapfile uninstall
+systemctl disable dphys-swapfile
+
+#remove saving clock data (its got no persistent storage to save to)
+rm /etc/cron.hourly/fake-hwclock
 
 #enable SSHD
 systemctl enable ssh
@@ -36,6 +44,8 @@ cp /home/pi/pi_cluster/deployment/authorized_keys /home/pi/.ssh/authorized_keys
 chmod 600  /home/pi/.ssh/authorized_keys
 chown -R pi:pi /home/pi/.ssh
 
+#copy the munge key from the master, they have to be same
+ssh pi@10.0.0.10 'sudo cat /etc/munge/munge.key' > /etc/munge/munge.key
 
 #set the timezone
 rm /etc/localtime
