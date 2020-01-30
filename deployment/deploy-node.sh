@@ -28,6 +28,10 @@ dphys-swapfile swapoff
 dphys-swapfile uninstall
 systemctl disable dphys-swapfile
 
+#setup /var/tmp to be on a ramdisk
+mv /var/tmp/* /tmp
+ln -s /var/tmp /tmp
+
 #remove saving clock data (its got no persistent storage to save to)
 rm /etc/cron.hourly/fake-hwclock
 
