@@ -37,6 +37,7 @@ This repository contains a set of scripts, notes and demo software for building 
 * You should now have a fully installed master node. Running 'sinfo' should give an output like:
 
     `PARTITION AVAIL TIMELIMIT NODES STATE  NODELIST`
+    
     `compute     down*     infinite     10 idle*  node[0-9]`
 
 * The * next to the down means that the nodes are unreachable. 
@@ -136,6 +137,12 @@ TODO
 
 TODO
 
+### Add more compute nodes
+
+* Edit /etc/slurm/slurm-llnl.conf and change the PartitionName and NodeName definitions.
+* Add more entries to /etc/hosts
+* (optional) update the shutdown_cluster.sh, reboot_cluster.sh and cluster_up.sh scripts to include your new nodes.
+
 ## Potential Problems 
 
 ### NTP Synchronisation
@@ -144,3 +151,10 @@ TODO
  
 ## Running A job
 
+* Use all your faviourite standard Slurm commands.
+* Directly with srun: `srun -n1 --pty /bin/bash` (change /bin/bash to program of your choice)
+* Pi calculation demo: `sbatch ~/pi_cluster/demos/mpi_pi_demo/mpi_numpi.sh`
+
+## Teaching HPC with a Raspberry Pi cluster
+
+See [https://scw-aberystwyth.github.io/Introduction-to-HPC-with-RaspberryPi/]
