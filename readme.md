@@ -17,33 +17,33 @@ This repository contains a set of scripts, notes and demo software for building 
 
 * Download and extract Raspbian Lite Buster
 
-    wget https://downloads.raspberrypi.org/raspbian_lite_latest -O raspbian_lite_latest.zip
+    `wget https://downloads.raspberrypi.org/raspbian_lite_latest -O raspbian_lite_latest.zip`
 
-    unzip raspbian_lite_latest.zip
+    `unzip raspbian_lite_latest.zip`
 
 * Copy the image to an SD Card
     (note change mmcblk0 to your SD card device)
-    sudo dd if=2019-09-26-raspbian-buster-lite.img of=/dev/mmcblk0 status=progress
+    `sudo dd if=2019-09-26-raspbian-buster-lite.img of=/dev/mmcblk0 status=progress`
 
 * Boot the SD card in a Raspberry Pi and connect it to the internet (preferably via ethernet).
 
 * Run the deployment script on the Pi:
 
-    wget https://raw.githubusercontent.com/colinsauze/pi_cluster/master/deployment/deploy-master.sh
-    sudo bash ./deploy-master.sh 
+    `wget https://raw.githubusercontent.com/colinsauze/pi_cluster/master/deployment/deploy-master.sh`
+    `sudo bash ./deploy-master.sh`
 
 * Reboot the Pi
 
 * You should now have a fully installed master node. Running 'sinfo' should give an output like:
 
-    PARTITION AVAIL TIMELIMIT NODES STATE  NODELIST
-    compute     down*     infinite     10 idle*  node[0-9]
+    `PARTITION AVAIL TIMELIMIT NODES STATE  NODELIST`
+    `compute     down*     infinite     10 idle*  node[0-9]`
 
 * The * next to the down means that the nodes are unreachable. 
 
 #### Change WiFi network name/password
 
-Edit /etc/hostapd/hostapd.conf and change the "ssid" and "wpa_passphrase" options. 
+Edit `/etc/hostapd/hostapd.conf` and change the "ssid" and "wpa_passphrase" options. 
 
 ### Compute node
 
@@ -53,8 +53,8 @@ Edit /etc/hostapd/hostapd.conf and change the "ssid" and "wpa_passphrase" option
 
 * Run the slave deployment script:
 
-    wget https://raw.githubusercontent.com/colinsauze/pi_cluster/master/deployment/deploy-slave.sh
-    sudo bash ./deploy-slave.sh 
+    `wget https://raw.githubusercontent.com/colinsauze/pi_cluster/master/deployment/deploy-slave.sh`
+    `sudo bash ./deploy-slave.sh`
 
 * Register the node's mac address and allocate it the IP 10.0.0.100 by running admin_scripts/add_new_host.sh from the master node. Note that the compute node must be the most recent thing to request a DHCP lease for this to work. 
 
@@ -64,14 +64,14 @@ Edit /etc/hostapd/hostapd.conf and change the "ssid" and "wpa_passphrase" option
 
 * Run sinfo on the master node it should now show one node in a contactable state (without a * next to it)
 
-    PARTITION AVAIL TIMELIMIT NODES STATE  NODELIST
-    compute     down*     infinite     9 idle*  node[1-9]
-    compute     down     infinite     1 idle  node00
+    `PARTITION AVAIL TIMELIMIT NODES STATE  NODELIST`
+    `compute     down*     infinite     9 idle*  node[1-9]`
+    `compute     down     infinite     1 idle  node00`
 
 #### Network booting the root filesystem
 (this has not yet been fully tested)
 * Run deployment/copy_slave_fs.sh to copy the contents of the root filesystem to the master. 
-* Copy config/node/cmdline_nfsboot.txt to /boot/cmdline.txt 
+* Copy `config/node/cmdline_nfsboot.txt` to `/boot/cmdline.txt `
 * Reboot the Pi, it should now mount its root filesystem from NFS.
 * Deploy additional nodes by copying the contents of /boot from any node and config/node/cmdline_nfsboot.txt in place of the default cmdline.txt
 
@@ -86,11 +86,11 @@ Edit /etc/hostapd/hostapd.conf and change the "ssid" and "wpa_passphrase" option
 ## Creating User Accounts
 * Create a CSV spreadsheet with the format: 
 
-    username,email,password 
+    `username,email,password` 
     
-* Save it as piclusternames.csv in the admin_scripts directory. 
+* Save it as `piclusternames.csv` in the admin_scripts directory. 
 
-* Run admin_scripts/make_users.sh 
+* Run `admin_scripts/make_users.sh` 
 * This will create an account on the master node and copy the new passwd file to the compute nodes. 
 * WARNING: This code needs additional testing that it doesn't wipe out system users and break slurm.  
 
@@ -99,19 +99,19 @@ Edit /etc/hostapd/hostapd.conf and change the "ssid" and "wpa_passphrase" option
 * (Assuming home directories are on their own disk)
 * Remount the drive with quota support:
 
- sudo mount /dev/sda1 /home -o remount,usrquota,grpquota
+ `sudo mount /dev/sda1 /home -o remount,usrquota,grpquota`
 
 * Enable quotas:
- sudo quotaon /home
+ `sudo quotaon /home`
 
 * Verify quotas:
- sudo quotacheck -ugm /home
+ `sudo quotacheck -ugm /home`
 
 * Setup quota for a user:
- sudo edquota -u <userid>
+ `sudo edquota -u <userid>`
 
 * Copy another users's quota settings:
- sudo edquota -p <template userid> <target user id>
+ `sudo edquota -p <template userid> <target user id>`
 
 
 ## Additional Setup Changes
@@ -120,11 +120,11 @@ Edit /etc/hostapd/hostapd.conf and change the "ssid" and "wpa_passphrase" option
 
 * Connect a USB hard disk to the master, we are assuming that you want to use the first partition as a home directory (/dev/sda1)
 
-* sudo mkfs.ext4 /dev/sda1
+* `sudo mkfs.ext4 /dev/sda1`
 
 * UUID=`sudo dumpe2fs -h /dev/loop0 2>&1 | grep UUID | awk '{print $3}'`
 
-* echo "UUID=$UUID  /home   ext4    defaults,usrquota,grpquota,noauto" | sudo tee -a /etc/fstab
+* `echo "UUID=$UUID  /home   ext4    defaults,usrquota,grpquota,noauto" | sudo tee -a /etc/fstab`
 
 * Note that noauto option is there so that the boot doesn't hang if the hard disk isn't connected
  
