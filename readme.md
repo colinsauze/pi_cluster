@@ -157,4 +157,4 @@ TODO
 
 ## Teaching HPC with a Raspberry Pi cluster
 
-See [[https://scw-aberystwyth.github.io/Introduction-to-HPC-with-RaspberryPi/]]
+See https://scw-aberystwyth.github.io/Introduction-to-HPC-with-RaspberryPi/
